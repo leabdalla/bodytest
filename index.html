@@ -38,7 +38,6 @@
       init();
       animate();
 
-
       function init() {
 
         camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 20 );
@@ -61,7 +60,9 @@
         const onProgress = function ( xhr ) {
           if ( xhr.lengthComputable ) {
             const percentComplete = xhr.loaded / xhr.total * 100;
-            console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+            if(percentComplete >= 100){
+              console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+            }
           }
         };
 
@@ -79,6 +80,7 @@
                 // object.position.y = - 0.95;
                 // object.scale.setScalar( 0.01 );
                 scene.add( object );
+                console.log(object);
 
               }, onProgress );
 
@@ -115,7 +117,6 @@
         requestAnimationFrame( animate );
         renderer.render( scene, camera );
       }
-
 
     </script>
 
