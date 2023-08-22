@@ -8,9 +8,9 @@
   </head>
 
   <body>
-    <div id="info">
-    <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - OBJLoader test
-    </div>
+    <!-- <div id="info">
+      <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - OBJLoader test
+    </div> -->
 
     <!-- Import maps polyfill -->
     <!-- Remove this when import maps will be widely supported -->
@@ -36,13 +36,16 @@
 
       let object;
 
+      let plane;
+
       init();
 
 
       function init() {
 
-        camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 20 );
-        camera.position.z = 2.5;
+        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.5, 20 );
+        camera.position.z = 3;
+        camera.position.y = 3;
 
         // scene
 
@@ -56,24 +59,28 @@
         camera.add( pointLight );
         scene.add( camera );
 
+        // plane
+
+        var planeGeometry = new THREE.PlaneGeometry(3, 3);
+        var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xcccccc});
+        plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.rotation.x = -0.5 * Math.PI;
+        plane.position.y = 0;
+        plane.receiveShadow = true;
+        scene.add(plane);
+
         // manager
 
         function loadModel() {
-
           object.traverse( function ( child ) {
-
             if ( child.isMesh ) child.material.map = texture;
-
-          } );
-
-          // object.position.y = - 0.95;
+          });
+          object.position.y = 0.45;
           // object.scale.setScalar( 0.01 );
+          object.rotation.x = Math.PI / 180*270;
           scene.add( object );
-
           render();
-
         }
-
         const manager = new THREE.LoadingManager( loadModel );
 
         // texture
@@ -85,23 +92,17 @@
         // model
 
         function onProgress( xhr ) {
-
           if ( xhr.lengthComputable ) {
-
             const percentComplete = xhr.loaded / xhr.total * 100;
             console.log( 'model ' + Math.round( percentComplete, 2 ) + '% downloaded' );
-
           }
-
         }
 
         function onError() {}
 
         const loader = new OBJLoader( manager );
         loader.load( 'model/model_05_color.obj', function ( obj ) {
-
           object = obj;
-
         }, onProgress, onError );
 
         //
@@ -125,18 +126,13 @@
       }
 
       function onWindowResize() {
-
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-
         renderer.setSize( window.innerWidth, window.innerHeight );
-
       }
 
       function render() {
-
         renderer.render( scene, camera );
-
       }
 
     </script>
